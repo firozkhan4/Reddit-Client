@@ -1,0 +1,25 @@
+#root{
+    width: 100%;
+    height: 100vh;
+    background: #F7FADB;
+}
+
+.notfound{
+    padding: 10px 1em;
+    border: 1px solid black;
+}
+
+.search-box{
+    z-index: 1000;
+}
+
+.header{
+    height: 60px;
+    padding: 20px 50px;
+    border-bottom: 1px solid;
+}
+
+.main{
+    height: calc(100% - 60px);
+    margin-top: 2em;
+}
