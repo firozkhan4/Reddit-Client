@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { ContentContext } from "../contexts/Content";
 import orbito from "../assets/orbito.jpg";
+import ImageG from "./ImageG";
 
 export default function SubReddit() {
   const { subreddit } = useContext(ContentContext);
+
   return (
     <div className="row-5 main container">
       {subreddit.length > 0 ? (
@@ -11,17 +13,43 @@ export default function SubReddit() {
           {subreddit.map((post, index) => (
             <div key={index} className="card mb-3">
               <div className="card-body">
-                <h5>{post.data.title}</h5>
-                <p className="card-text">{post.data.selftext}</p>
+                <h3>{post.data.title}</h3>
                 <div>
-                    {post.data.media_embed.content}
+                  {post.data.secure_media &&
+                    post.data.secure_media.oembed &&
+                    post.data.secure_media.oembed.thumbnail_url && (
+                      <img
+                        src={post.data.secure_media.oembed.thumbnail_url}
+                        className="w-100 rounded"
+                      />
+                    )}
                 </div>
-                <a
-                  href={`https://www.reddit.com${post.data.permalink}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-link"
-                ></a>
+                <div>
+                  {post.data.preview &&
+                    post.data.preview.images &&
+                    post.data.preview.images[0].resolutions && (
+                      <ImageG
+                        source={post.data.preview.images[0].resolutions}
+                      />
+                    )}
+                </div>
+                <p
+                  className="card-text"
+                  dangerouslySetInnerHTML={{
+                    __html: post.data.selftext_html ?? "",
+                  }}
+                ></p>
+
+                <p className="d-flex justify-content-end">
+                  <a
+                    href={`https://www.reddit.com${post.data.permalink}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-link text-decoration-none text-end"
+                  >
+                    Read more...
+                  </a>
+                </p>
               </div>
             </div>
           ))}

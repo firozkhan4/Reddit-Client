@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SearchBox from "./components/SearchBox";
 import SubReddit from "./components/SubReddit";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 export default function App() {
   const [showSearchBox, setShowSearchBox] = useState(false);
@@ -19,13 +20,14 @@ export default function App() {
     return () => {
       document.removeEventListener("keypress", handleKeyDown);
     };
-  });
+  },[]);
 
   return (
     <div className="h-100 container-fluid">
       {showSearchBox && <SearchBox setShowSearchBox={setShowSearchBox} />}
       <Header />
       <SubReddit />
+      <Footer/>
     </div>
   );
 }

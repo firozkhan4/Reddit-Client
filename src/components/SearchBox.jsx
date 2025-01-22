@@ -1,12 +1,30 @@
 import { useContext, useState } from "react";
 import { ContentContext } from "../contexts/Content";
+import { SaveRedditContext } from "../contexts/SaveReddit";
 
-export default function SearchBox({setShowSearchBox}) {
+export default function SearchBox({ setShowSearchBox }) {
   const { subreddit, setSubreddit } = useContext(ContentContext);
+  const { saveList, addSubReddit } = useContext(SaveRedditContext);
   const [search, setSearch] = useState("");
 
+  function handleHTML(content) {
+    const entities = {
+      "&lt;": "<",
+      "&gt;": ">",
+      "&#39;": "'",
+      "&quot;": '"',
+      "&amp;": "&",
+      "&#36;": "$",
+    };
+
+    return content.replace(
+      /&(lt|gt|#39|quot|amp|#36);/g,
+      (match) => entities[match]
+    );
+  }
+
   const handleSearch = async (e) => {
-    if(e.key !== "Enter") return
+    if (e.key !== "Enter") return;
     if (search.trim() === "") return;
 
     try {
@@ -16,8 +34,25 @@ export default function SearchBox({setShowSearchBox}) {
         throw new Error("Subreddit not found");
       }
       const data = await response.json();
+
+      data.data.children.forEach((item) => {
+        if (
+          item.data.secure_media &&
+          item.data.secure_media.oembed &&
+          item.data.secure_media.oembed.html
+        ) {
+          const content = item.data.secure_media.oembed.html;
+          item.data.secure_media.oembed.html = handleHTML(content);
+        }
+
+        if (item.data.selftext_html) {
+          const content = item.data.selftext_html;
+          item.data.selftext_html = handleHTML(content);
+        }
+      });
+
       setSubreddit(data.data.children);
-      setShowSearchBox(false)
+      setShowSearchBox(false);
     } catch (error) {
       console.error(error);
     }
@@ -38,10 +73,9 @@ export default function SearchBox({setShowSearchBox}) {
         autoFocus
       />
       <ul>
-        <li>
-          programming
-          <section></section>
-        </li>
+        {saveList.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
       </ul>
     </div>
   );

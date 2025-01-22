@@ -4,11 +4,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import App from "./App.jsx";
 import { ContentProvider } from "./contexts/Content.jsx";
+import { SaveRedditProvider } from "./contexts/SaveReddit.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ContentProvider>
-      <App />
+      <SaveRedditProvider>
+        <App />
+      </SaveRedditProvider>
     </ContentProvider>
   </StrictMode>
 );
